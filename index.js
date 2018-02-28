@@ -83,8 +83,16 @@ Notifications.configure = function(options: Object) {
 		this.callNative( 'addEventListener', [ 'register', this._onRegister ] );
 		this.callNative( 'addEventListener', [ 'notification', this._onNotification ] );
 		this.callNative( 'addEventListener', [ 'localNotification', this._onNotification ] );
-		Platform.OS === 'android' ? this.callNative( 'addEventListener', [ 'remoteFetch', this._onRemoteFetch ] ) : null
 
+		if (Platform.OS === 'android'){
+			this.callNative( 'addEventListener', [ 'remoteFetch', this._onRemoteFetch ] );
+			this.handler.createChannel({
+				id: 'drops',
+				name: 'Drops',
+				description: 'Drops channel',
+				priority: 'high'
+			});
+		}
 		this.isLoaded = true;
 	}
 

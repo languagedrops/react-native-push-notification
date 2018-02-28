@@ -161,7 +161,7 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
             NotificationManager manager = (NotificationManager) getReactApplicationContext().getSystemService(NOTIFICATION_SERVICE);
 
             if (manager == null) {
-                promise.resolve(null);
+//                promise.resolve(false);
                 return;
             }
 
@@ -188,7 +188,7 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
 
 
             if (manager.getNotificationChannel(id) != null) {
-                promise.resolve(null);
+//                promise.resolve(false);
                 return;
             }
 

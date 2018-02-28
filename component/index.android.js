@@ -26,6 +26,10 @@ NotificationsComponent.prototype.getInitialNotification = function () {
         });
 };
 
+NotificationsComponent.prototype.createChannel = function(details: Object) {
+	RNPushNotification.createNotificationChannel(details);
+};
+
 NotificationsComponent.prototype.requestPermissions = function(senderID: string) {
 	RNPushNotification.requestPermissions(senderID);
 };
