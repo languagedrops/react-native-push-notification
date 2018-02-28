@@ -2,11 +2,13 @@ package com.dieam.reactnativepushnotification.modules;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.dieam.reactnativepushnotification.helpers.ApplicationBadgeHelper;
@@ -24,6 +26,8 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class RNPushNotification extends ReactContextBaseJavaModule implements ActivityEventListener {
     public static final String LOG_TAG = "RNPushNotification";// all logging should use this tag
@@ -98,7 +102,7 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
                 mJsDelivery.notifyNotificationAction(bundle);
 
                 // Dismiss the notification popup.
-                NotificationManager manager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+                NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
                 int notificationID = Integer.parseInt(bundle.getString("id"));
                 manager.cancel(notificationID);
             }
@@ -149,6 +153,56 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
             }
         }
         promise.resolve(params);
+    }
+
+    @ReactMethod
+    public void createNotificationChannel(ReadableMap details, Promise promise) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager manager = (NotificationManager) getReactApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+
+            if (manager == null) {
+                promise.resolve(null);
+                return;
+            }
+
+            String id = details.getString("id");
+            String name = details.getString("name");
+            String priority = details.getString("priority");
+            int importance;
+            switch (priority) {
+                case "min":
+                    importance = NotificationManager.IMPORTANCE_MIN;
+                    break;
+                case "low":
+                    importance = NotificationManager.IMPORTANCE_LOW;
+                    break;
+                case "high":
+                    importance = NotificationManager                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        .IMPORTANCE_HIGH;
+                    break;
+                case "max":
+                    importance = NotificationManager.IMPORTANCE_MAX;
+                    break;
+                default:
+                    importance = NotificationManager.IMPORTANCE_DEFAULT;
+            }
+
+
+            if (manager.getNotificationChannel(id) != null) {
+                promise.resolve(null);
+                return;
+            }
+
+            NotificationChannel channel = new NotificationChannel(
+                    id,
+                    name,
+                    importance);
+            // Configure the notification channel.
+            if (details.hasKey("description")) {
+                channel.setDescription(details.getString("description"));
+            }
+            manager.createNotificationChannel(channel);
+        }
+        promise.resolve(null);
     }
 
     @ReactMethod
