@@ -156,7 +156,7 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
     }
 
     @ReactMethod
-    public void createNotificationChannel(ReadableMap details, Promise promise) {
+    public void createNotificationChannel(ReadableMap details) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager manager = (NotificationManager) getReactApplicationContext().getSystemService(NOTIFICATION_SERVICE);
 
