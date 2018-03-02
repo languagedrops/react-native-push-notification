@@ -202,7 +202,7 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
             }
             manager.createNotificationChannel(channel);
         }
-        promise.resolve(null);
+        // promise.resolve(null);
     }
 
     @ReactMethod

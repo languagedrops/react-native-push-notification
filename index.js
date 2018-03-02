@@ -13,10 +13,11 @@ var Platform = require('react-native').Platform;
 
 var Notifications = {
 	handler: RNNotifications,
+	channel: false,
 	onRegister: false,
 	onError: false,
 	onNotification: false,
-  onRemoteFetch: false,
+  	onRemoteFetch: false,
 	isLoaded: false,
 	hasPoppedInitialNotification: false,
 
@@ -52,6 +53,10 @@ Notifications.callNative = function(name: String, params: Array) {
  * @param {Boolean}		options.requestPermissions - Check permissions when register
  */
 Notifications.configure = function(options: Object) {
+	if ( typeof options.channel !== 'undefined' ) {
+		this.channel = options.channel;
+	}
+
 	if ( typeof options.onRegister !== 'undefined' ) {
 		this.onRegister = options.onRegister;
 	}
@@ -86,12 +91,9 @@ Notifications.configure = function(options: Object) {
 
 		if (Platform.OS === 'android'){
 			this.callNative( 'addEventListener', [ 'remoteFetch', this._onRemoteFetch ] );
-			this.handler.createChannel({
-				id: 'drops',
-				name: 'Drops',
-				description: 'Drops channel',
-				priority: 'high'
-			});
+			if (options.channel !== null){
+				this.handler.createChannel(options.channel);
+			}
 		}
 		this.isLoaded = true;
 	}
